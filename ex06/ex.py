@@ -51,19 +51,19 @@ def main2():
     color_red = pg.Color(255, 0, 0)
     color_green = pg.Color(0, 255, 0)
     color_yello = pg.Color(255, 212, 0)
-    screen = pg.display.set_mode((900, 1000)) #スクリーンの大きさ
+    screen = pg.display.set_mode((900, 900)) #スクリーンの大きさ
     pg.display.set_caption("蛇")
-    arr = [([0] * 91) for i in range(101)]  
+    arr = [([0] * 91) for i in range(91)]  
     x = 10  # 蛇の初期x座標
     y = 10  # 蛇の初期y座標
     foodx = random.randint(1, 90)  # 食べ物のx座標
-    foody = random.randint(1, 100)  # 食べ物のy座標
+    foody = random.randint(1, 90)  # 食べ物のy座標
     arr[foodx][foody] = -1
     snake_lon = 3  # 蛇の長さ
     way = 1  # 蛇の運動方向
 
     tekix = random.randint(1, 90)  # 敵のx座標
-    tekiy = random.randint(1, 100)  # 敵のy座標
+    tekiy = random.randint(1, 90)  # 敵のy座標
     arr[tekix][tekiy] = -2
 
     teki_sfc = pg.Surface((10, 10)) # 正方形の空のSurface
@@ -160,9 +160,10 @@ def main2():
             if (x == foodx) and (y == foody):   #蛇が食べ物を食べったら
                 snake_lon += 1    #長さ+1
                 t -= t/4 # 蛇が現在の速度の1/4加速(筒井)
+                
                 while (arr[foodx][foody] != 0):    #新しい食べ物を表示
                     foodx = random.randint(1, 90)
-                    foody = random.randint(1, 100)
+                    foody = random.randint(1, 90)
                 arr[foodx][foody] = -1
                 scor += 1 #スコアが+1
             if round(gt%5) == 0: #五秒ごと経つと敵動く方向が変わる
