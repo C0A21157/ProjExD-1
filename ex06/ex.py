@@ -52,7 +52,7 @@ def main2():
     color_yello = pg.Color(255, 212, 0)
     screen = pg.display.set_mode((900, 900)) #スクリーンの大きさ
     pg.display.set_caption("蛇")
-    arr = [([0] * 91) for i in range(91)]  
+    arr = [([0] * 160) for i in range(90)]  
     x = 5  # 蛇の初期x座標
     y = 5 # 蛇の初期y座標
     mx, my = 50/x, 50/y
@@ -136,7 +136,7 @@ def main2():
                 y -= 1
             if way == 4:
                 y += 1
-            if (x > 90) or (y > 90) or (x < 1) or (y < 1) or (arr[x][y] > 0):  # 死亡(壁、自分の体をぶつかったら)
+            if (x > 88) or (y > 88) or (x < 1) or (y < 1) or (arr[x][y] > 0):  # 死亡(壁、自分の体をぶつかったら)
                 end.play()  # 終了時のSE
                 time.sleep(1)  # 1秒停止
                 screen.blit(gover,(300,400))#ゲームオーバーの表示(坂本)
