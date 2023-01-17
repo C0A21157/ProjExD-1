@@ -18,6 +18,9 @@ def main():
     snake_lon = 3  # 蛇の長さ
     way = 1  # 蛇の運動方向
 <<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> efc9f0313274c01e2930c0ead7c177eb070853b7
     fonto = pg.font.Font(None,80)
     fonto2 = pg.font.Font(None,30)
     appnum = 3 #りんごゲットのノルマ(坂本)
@@ -25,6 +28,8 @@ def main():
     clear = fonto.render("Game Clear",True,(0,0,255))#ゲームクリアの表示(坂本)
     gover = fonto.render("Game Over",True,(255,0,0))#ゲームオーバーの表示(坂本)
     game = True #ゲームが続いているかのフラグ(坂本)
+<<<<<<< HEAD
+=======
     while True:
         if game:#ゲームオーバーでない限り(坂本)
             screen.fill(color_white)
@@ -125,6 +130,7 @@ def main():
     get = pg.mixer.Sound("レトロアクション.mp3")  # 餌ゲット時のSEのロード
     end = pg.mixer.Sound("しょげる.mp3")  # 終了時のSEのロード
 
+>>>>>>> efc9f0313274c01e2930c0ead7c177eb070853b7
     while True:
         screen.fill(color_white)
         time.sleep(0.1)
