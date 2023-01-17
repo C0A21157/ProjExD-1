@@ -28,7 +28,7 @@ class Maze:
     def blit(self,scr:Screen):
         scr.sfc.blit(self.sfc,self.rct)
 
-def check_bound(obj_rct, scr_rct):
+def check_bound(obj_rct, scr_rct): # 敵の運動方向の変化(楊)
     # 第1引数；敵rect
     # 第2引数：スクリーンrect
     # 範囲内：+1/範囲外：-1
@@ -43,47 +43,41 @@ def main2():
     clock = pg.time.Clock()
     scr = Screen("食べろにょろにょろ", (1600,900), "fig/pg_bg.jpg")
 
-    make_lst=mm.make_maze(18,18) #マスの数
-    print (make_lst)
-    maze=Maze(make_lst,scr)
+    maze_lst=mm.make_maze(18,18) #マスの数
+    print (maze_lst)
+    maze=Maze(maze_lst,scr)
 
     color_red = pg.Color(255, 0, 0)
     color_green = pg.Color(0, 255, 0)
-<<<<<<< HEAD
     color_yello = pg.Color(255, 212, 0)
     screen = pg.display.set_mode((900, 900)) #スクリーンの大きさ
     pg.display.set_caption("蛇")
     arr = [([0] * 91) for i in range(91)]  
-=======
-    screen = pg.display.set_mode((900, 900)) #スクリーンの大きさ
-    pg.display.set_caption("蛇")
-    arr = [([0] * 160) for i in range(90)]  
->>>>>>> 478f82a05a1ad807198d967d276d6570ab85d3fe
-    x = 10  # 蛇の初期x座標
-    y = 10  # 蛇の初期y座標
+    x = 5  # 蛇の初期x座標
+    y = 5 # 蛇の初期y座標
+    mx, my = 50/x, 50/y
     foodx = random.randint(1, 90)  # 食べ物のx座標
     foody = random.randint(1, 90)  # 食べ物のy座標
     arr[foodx][foody] = -1
     snake_lon = 3  # 蛇の長さ
     way = 1  # 蛇の運動方向
-<<<<<<< HEAD
 
-    tekix = random.randint(1, 90)  # 敵のx座標
-    tekiy = random.randint(1, 90)  # 敵のy座標
-    arr[tekix][tekiy] = -2
+    # 敵の座標設定(楊)
+    tekix = random.randint(1, 90) 
+    tekiy = random.randint(1, 90)  
+    arr[tekix][tekiy] = -2 
 
+    # (楊)敵を描く
     teki_sfc = pg.Surface((10, 10)) # 正方形の空のSurface
     pg.draw.rect(teki_sfc, color_yello, (0, 0, 10, 10))
     teki_rct = teki_sfc.get_rect()
     teki_rct.centerx = tekix*10
     teki_rct.centery = tekiy*10
 
-    xy = [+3,-3, 0]        #敵の移動と方向    
+    xy = [+3,-3, 0]        #(楊)敵の移動と方向    
     vx = random.choice(xy)
     vy = random.choice(xy)
 
-    font = pg.font.Font(None, 30) #スコアの文字列
-    scor = 0 #スコアの初期値
 
     st = time.time()
 
@@ -94,8 +88,6 @@ def main2():
         scr.blit()
         maze.blit(scr)
 
-        text = font.render(f"Score {scor}", True, (0,0,0))   # 描画する文字列の設定
-        scr.sfc.blit(text, [20, 1])# 文字列の表示位置
         ed = time.time()
         gt = ed-st
         
@@ -122,12 +114,8 @@ def main2():
         if way == 4:
             y += spd
         if (x > 90) or (y > 100) or (x < 1) or (y < 1) or (arr[x][y] > 0):  # 死亡(壁、自分の体をぶつかったら)
-            font1 = pg.font.Font(None, 100) 
-            text1 = font1.render("Game Over!", True, color_red)
-            text2 = font1.render(f"Score {scor}", True, color_red)   # 描画する文字列の設定
-            scr.sfc.blit(text1, [100, 100])# 文字列の表示位置
-            scr.sfc.blit(text2, [150, 200])
             return
+
         arr[x][y] = snake_lon
         for a, b in enumerate(arr, 1):
             for c, d in enumerate(b, 1):
@@ -136,9 +124,10 @@ def main2():
                     # print(a,c) #蛇の座標を表示
                     arr[a - 1][c - 1] = arr[a - 1][c - 1] - 1
                     pg.draw.rect(screen, color_green, ((a - 1) * 10, (c - 1) * 10, 10, 10))
+                    
                 if (d == -1):
                     pg.draw.rect(scr.sfc, color_red, ((a - 1) * 10, (c - 1) * 10, 10, 10))
-                if (d == -2):
+                if (d == -2): #(楊)敵の移動
                     teki_rct.move_ip(vx, vy)
                     
                     yoko,tate = check_bound(teki_rct, scr.rct)
@@ -148,19 +137,9 @@ def main2():
                     xf,xi = math.modf(teki_rct.centerx/10)
                     yf,yi = math.modf(teki_rct.centery/10)
 
-        if (x == xi) and (y == yi): #敵をぶつかったら、ゲームオーバー
-            teki_rct.move_ip(vx, vy)
-                
-            yoko,tate = check_bound(teki_rct, scr.rct)
-            vx = 0
-            vy = 0
-            scr.sfc.blit(teki_sfc, teki_rct)
-            font1 = pg.font.Font(None, 100) 
-            text1 = font1.render("Game Over!", True, color_red)
-            text2 = font1.render(f"Score {scor}", True, color_red)   # 描画する文字列の設定
-            scr.sfc.blit(text1, [100, 100])# 文字列の表示位置
-            scr.sfc.blit(text2, [150, 200])
+        if (x == xi) and (y == yi):  # 死亡(壁、自分の体をぶつかったら)
             return
+            
 
         else:
             if (x == foodx) and (y == foody):   #蛇が食べ物を食べったら
@@ -171,7 +150,7 @@ def main2():
                     foodx = random.randint(1, 90)
                     foody = random.randint(1, 90)
                 arr[foodx][foody] = -1
-                scor += 1 #スコアが+1
+
             if round(gt%5) == 0: #五秒ごと経つと敵動く方向が変わる
                 vx = random.choice(xy)
                 vy = random.choice(xy)
@@ -180,75 +159,6 @@ def main2():
                 if (d < 0):
                     pg.draw.rect(screen, color_red, ((a - 1) * 10, (c - 1) * 10, 10, 10))  
     
-
-=======
-    fonto = pg.font.Font(None,80)
-    fonto2 = pg.font.Font(None,30)
-    appnum = 3 #りんごゲットのノルマ(坂本)
-    app = fonto2.render((f"APPLE:{appnum}"),True,(0,0,0)) #残りのりんごの獲得ノルマ表示(坂本)
-    clear = fonto.render("Game Clear",True,(0,250,0))#ゲームクリアの表示(坂本)
-    gover = fonto.render("Game Over",True,(255,0,0))#ゲームオーバーの表示(坂本)
-    game = True #ゲームが続いているかのフラグ(坂本)
-
-    while True:
-        if game:
-            scr.blit()
-            maze.blit(scr)
-            screen.blit(app,(50,50))#スクリーンに表示(坂本)
-            #screen.fill(color_white)
-            time.sleep(0.1)
-            for event in pg.event.get():  # 监听器
-                if event.type == pg.QUIT:
-                    sys.exit()
-                elif event.type == pg.KEYDOWN:
-                    if (event.key == pg.K_RIGHT) and (way != 2):  # 右
-                        way = 1
-                    if (event.key == pg.K_LEFT) and (way != 1):  # 左
-                        way = 2
-                    if (event.key == pg.K_UP) and (way != 4):  # 上
-                        way = 3
-                    if (event.key == pg.K_DOWN) and (way != 3):  # 下に移動
-                        way = 4
-            if way == 1:
-                x += 1
-            if way == 2:
-                x -= 1
-            if way == 3:
-                y -= 1
-            if way == 4:
-                y += 1
-            if (x > 160) or (y > 90) or (x < 1) or (y < 1) or (arr[x][y] > 0):  # 死亡(壁、自分の体をぶつかったら)
-                screen.blit(gover,(300,400))#ゲームオーバーの表示(坂本)
-                pg.display.update()
-                game= False   #ゲームオーバーのフラグ(坂本)
-            arr[x][y] = snake_lon
-            for a, b in enumerate(arr, 1):
-                for c, d in enumerate(b, 1):
-                    # 食べ物は-1，空地は0，蛇の位置は正数
-                    if (d > 0):
-                        # print(a,c) #蛇の座標を表示
-                        arr[a - 1][c - 1] = arr[a - 1][c - 1] - 1
-                        pg.draw.rect(screen, color_green, ((a - 1) * 10, (c - 1) * 10, 10, 10))
-                    if (d < 0):
-                        pg.draw.rect(screen, color_red, ((a - 1) * 10, (c - 1) * 10, 10, 10))
-            if (x == foodx) and (y == foody):   #蛇が食べ物を食べったら
-                snake_lon += 1    #長さ+1
-                appnum -= 1  #ノルマのりんごの数を1減らす(坂本)
-                app = fonto2.render((f"APPLE:{appnum}"),True,(0,0,0)) #残りのりんごの獲得ノルマ表示(坂本)
-                while (arr[foodx][foody] != 0):    #新しい食べ物を表示
-                    foodx = random.randint(1, 60)
-                    foody = random.randint(1, 40)
-                arr[foodx][foody] = -1
-                pg.display.update()
-                if appnum < 1:                   #りんごのノルマを達成していたら(坂本)
-                    screen.blit(clear,(300,400)) #クリア表示(坂本)
-                    pg.display.update()
-                    game = False #ゲームオーバーのフラグ(坂本)
-        else:
-            for event in pg.event.get():  
-                if event.type == pg.QUIT:
-                    sys.exit()
->>>>>>> 478f82a05a1ad807198d967d276d6570ab85d3fe
         pg.display.update()
         clock.tick(1000)
 
