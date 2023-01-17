@@ -4,6 +4,8 @@ import random,time
 import pygame as pg
 import maze_maker as mm
 
+
+
 class Screen:
     def __init__(self, title, wh, img_path):
         pg.display.set_caption(title) 
@@ -40,35 +42,19 @@ def check_bound(obj_rct, scr_rct):
     return yoko, tate
 
 def main2():
-    clock = pg.time.Clock()
-    scr = Screen("食べろにょろにょろ", (1600,900), "fig/pg_bg.jpg")
-
-    make_lst=mm.make_maze(18,18) #マスの数
-    print (make_lst)
-    maze=Maze(make_lst,scr)
-
-    color_red = pg.Color(255, 0, 0)
-    color_green = pg.Color(0, 255, 0)
-    color_yello = pg.Color(255, 212, 0)
-    screen = pg.display.set_mode((900, 1000)) #スクリーンの大きさ
-    pg.display.set_caption("蛇")
-    arr = [([0] * 41) for i in range(61)]  
-    x = 10  # 蛇の初期x座標
-    y = 10  # 蛇の初期y座標
-    foodx = random.randint(1, 60)  # 食べ物のx座標
-    foody = random.randint(1, 40)  # 食べ物のy座標
-    arr[foodx][foody] = -1
-    snake_lon = 3  # 蛇の長さ
-    way = 1  # 蛇の運動方向
-
-
 
         pg.display.update()
         clock.tick(1000)
 
 if __name__ == '__main__':
     pg.init()
+    root = tkinter.Tk()
+    root.title("スタート") #初期画面タイトル
+    root.bind("<KeyPress>", key)
+    canvas = tkinter.Canvas(width=600, height=400, bg="white") #初期画面の画面サイズ設定
+    canvas.pack()
     main2()
+    root.mainloop()
     pg.quit()
-    sys.exit()   
-
+    sys.exit()
+    
