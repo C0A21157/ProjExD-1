@@ -53,17 +53,17 @@ def main2():
     color_yello = pg.Color(255, 212, 0)
     screen = pg.display.set_mode((900, 1000)) #スクリーンの大きさ
     pg.display.set_caption("蛇")
-    arr = [([0] * 41) for i in range(61)]  
+    arr = [([0] * 91) for i in range(101)]  
     x = 10  # 蛇の初期x座標
     y = 10  # 蛇の初期y座標
-    foodx = random.randint(1, 60)  # 食べ物のx座標
-    foody = random.randint(1, 40)  # 食べ物のy座標
+    foodx = random.randint(1, 90)  # 食べ物のx座標
+    foody = random.randint(1, 100)  # 食べ物のy座標
     arr[foodx][foody] = -1
     snake_lon = 3  # 蛇の長さ
     way = 1  # 蛇の運動方向
 
-    tekix = random.randint(1, 60)  # 敵のx座標
-    tekiy = random.randint(1, 40)  # 敵のy座標
+    tekix = random.randint(1, 90)  # 敵のx座標
+    tekiy = random.randint(1, 100)  # 敵のy座標
     arr[tekix][tekiy] = -2
 
     teki_sfc = pg.Surface((10, 10)) # 正方形の空のSurface
@@ -81,6 +81,8 @@ def main2():
 
     st = time.time()
 
+    spd = 1 # 蛇の移動速度(筒井)
+    t = 0.1 # 蛇の移動速度変更用の変数(筒井)
 
     while True:
         scr.blit()
@@ -106,14 +108,14 @@ def main2():
                 if (event.key == pg.K_DOWN) and (way != 3):  # 下に移動
                     way = 4
         if way == 1:
-            x += 1
+            x += spd # 1をspdに変更(筒井)
         if way == 2:
-            x -= 1
+            x -= spd
         if way == 3:
-            y -= 1
+            y -= spd
         if way == 4:
-            y += 1
-        if (x > 60) or (y > 40) or (x < 1) or (y < 1) or (arr[x][y] > 0):  # 死亡(壁、自分の体をぶつかったら)
+            y += spd
+        if (x > 90) or (y > 100) or (x < 1) or (y < 1) or (arr[x][y] > 0):  # 死亡(壁、自分の体をぶつかったら)
             font1 = pg.font.Font(None, 100) 
             text1 = font1.render("Game Over!", True, color_red)
             text2 = font1.render(f"Score {scor}", True, color_red)   # 描画する文字列の設定
@@ -157,9 +159,10 @@ def main2():
         else:
             if (x == foodx) and (y == foody):   #蛇が食べ物を食べったら
                 snake_lon += 1    #長さ+1
+                t -= t/4 # 蛇が現在の速度の1/4加速(筒井)
                 while (arr[foodx][foody] != 0):    #新しい食べ物を表示
-                    foodx = random.randint(1, 60)
-                    foody = random.randint(1, 40)
+                    foodx = random.randint(1, 90)
+                    foody = random.randint(1, 100)
                 arr[foodx][foody] = -1
                 scor += 1 #スコアが+1
             if round(gt%5) == 0: #五秒ごと経つと敵動く方向が変わる
@@ -167,6 +170,9 @@ def main2():
                 vy = random.choice(xy)
                 teki_rct.move_ip(vx, vy)
                 scr.sfc.blit(teki_sfc, teki_rct)   
+                if (d < 0):
+                    pg.draw.rect(screen, color_red, ((a - 1) * 10, (c - 1) * 10, 10, 10))  
+    
 
         pg.display.update()
         clock.tick(1000)
