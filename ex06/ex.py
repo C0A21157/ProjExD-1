@@ -60,39 +60,8 @@ def main2():
     arr[foodx][foody] = -1
     snake_lon = 3  # 蛇の長さ
     way = 1  # 蛇の運動方向
-    fonto = pg.font.Font(None,80)
-    fonto2 = pg.font.Font(None,30)
-    appnum = 3 #りんごゲットのノルマ(坂本)
-    app = fonto2.render((f"APPLE:{appnum}"),True,(0,0,0)) #残りのりんごの獲得ノルマ表示(坂本)
-    clear = fonto.render("Game Clear",True,(0,0,255))#ゲームクリアの表示(坂本)
-    gover = fonto.render("Game Over",True,(255,0,0))#ゲームオーバーの表示(坂本)
-    game = True #ゲームが続いているかのフラグ(坂本)
-
-    tekix = random.randint(1, 60)  # 敵のx座標
-    tekiy = random.randint(1, 40)  # 敵のy座標
-    arr[tekix][tekiy] = -2
-
-    teki_sfc = pg.Surface((10, 10)) # 正方形の空のSurface
-    pg.draw.rect(teki_sfc, color_yello, (0, 0, 10, 10))
-    teki_rct = teki_sfc.get_rect()
-    teki_rct.centerx = tekix*10
-    teki_rct.centery = tekiy*10
-
-    xy = [+3,-3, 0]        #敵の移動と方向    
-    vx = random.choice(xy)
-    vy = random.choice(xy)
-
-    font = pg.font.Font(None, 30) #スコアの文字列
-    scor = 0 #スコアの初期値
-
-    st = time.time()
 
 
-    while True:
-                while (arr[foodx][foody] != 0):    #新しい食べ物を表示
-                    foodx = random.randint(1, 60)
-                    foody = random.randint(1, 40)
-                arr[foodx][foody] = -1
 
         pg.display.update()
         clock.tick(1000)
