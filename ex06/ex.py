@@ -1,8 +1,9 @@
 
 import sys
-import random,time
+import random,time,math
 import pygame as pg
 import maze_maker as mm
+
 
 class Screen:
     def __init__(self, title, wh, img_path):
@@ -60,13 +61,6 @@ def main2():
     arr[foodx][foody] = -1
     snake_lon = 3  # 蛇の長さ
     way = 1  # 蛇の運動方向
-    fonto = pg.font.Font(None,80)
-    fonto2 = pg.font.Font(None,30)
-    appnum = 3 #りんごゲットのノルマ(坂本)
-    app = fonto2.render((f"APPLE:{appnum}"),True,(0,0,0)) #残りのりんごの獲得ノルマ表示(坂本)
-    clear = fonto.render("Game Clear",True,(0,0,255))#ゲームクリアの表示(坂本)
-    gover = fonto.render("Game Over",True,(255,0,0))#ゲームオーバーの表示(坂本)
-    game = True #ゲームが続いているかのフラグ(坂本)
 
     tekix = random.randint(1, 60)  # 敵のx座標
     tekiy = random.randint(1, 40)  # 敵のy座標
@@ -89,10 +83,90 @@ def main2():
 
 
     while True:
+        scr.blit()
+        maze.blit(scr)
+
+        text = font.render(f"Score {scor}", True, (0,0,0))   # 描画する文字列の設定
+        scr.sfc.blit(text, [20, 1])# 文字列の表示位置
+        ed = time.time()
+        gt = ed-st
+        
+        #screen.fill(color_white)
+        time.sleep(0.1)
+        for event in pg.event.get():  # 监听器
+            if event.type == pg.QUIT:
+                sys.exit()
+            elif event.type == pg.KEYDOWN:
+                if (event.key == pg.K_RIGHT) and (way != 2):  # 右
+                    way = 1
+                if (event.key == pg.K_LEFT) and (way != 1):  # 左
+                    way = 2
+                if (event.key == pg.K_UP) and (way != 4):  # 上
+                    way = 3
+                if (event.key == pg.K_DOWN) and (way != 3):  # 下に移動
+                    way = 4
+        if way == 1:
+            x += 1
+        if way == 2:
+            x -= 1
+        if way == 3:
+            y -= 1
+        if way == 4:
+            y += 1
+        if (x > 60) or (y > 40) or (x < 1) or (y < 1) or (arr[x][y] > 0):  # 死亡(壁、自分の体をぶつかったら)
+            font1 = pg.font.Font(None, 100) 
+            text1 = font1.render("Game Over!", True, color_red)
+            text2 = font1.render(f"Score {scor}", True, color_red)   # 描画する文字列の設定
+            scr.sfc.blit(text1, [100, 100])# 文字列の表示位置
+            scr.sfc.blit(text2, [150, 200])
+            return
+        arr[x][y] = snake_lon
+        for a, b in enumerate(arr, 1):
+            for c, d in enumerate(b, 1):
+                # 食べ物は-1，空地は0，蛇の位置は正数
+                if (d > 0):
+                    # print(a,c) #蛇の座標を表示
+                    arr[a - 1][c - 1] = arr[a - 1][c - 1] - 1
+                    pg.draw.rect(screen, color_green, ((a - 1) * 10, (c - 1) * 10, 10, 10))
+                if (d == -1):
+                    pg.draw.rect(scr.sfc, color_red, ((a - 1) * 10, (c - 1) * 10, 10, 10))
+                if (d == -2):
+                    teki_rct.move_ip(vx, vy)
+                    
+                    yoko,tate = check_bound(teki_rct, scr.rct)
+                    vx *= yoko
+                    vy *= tate
+                    scr.sfc.blit(teki_sfc, teki_rct)
+                    xf,xi = math.modf(teki_rct.centerx/10)
+                    yf,yi = math.modf(teki_rct.centery/10)
+
+        if (x == xi) and (y == yi): #敵をぶつかったら、ゲームオーバー
+            teki_rct.move_ip(vx, vy)
+                
+            yoko,tate = check_bound(teki_rct, scr.rct)
+            vx = 0
+            vy = 0
+            scr.sfc.blit(teki_sfc, teki_rct)
+            font1 = pg.font.Font(None, 100) 
+            text1 = font1.render("Game Over!", True, color_red)
+            text2 = font1.render(f"Score {scor}", True, color_red)   # 描画する文字列の設定
+            scr.sfc.blit(text1, [100, 100])# 文字列の表示位置
+            scr.sfc.blit(text2, [150, 200])
+            return
+
+        else:
+            if (x == foodx) and (y == foody):   #蛇が食べ物を食べったら
+                snake_lon += 1    #長さ+1
                 while (arr[foodx][foody] != 0):    #新しい食べ物を表示
                     foodx = random.randint(1, 60)
                     foody = random.randint(1, 40)
                 arr[foodx][foody] = -1
+                scor += 1 #スコアが+1
+            if round(gt%5) == 0: #五秒ごと経つと敵動く方向が変わる
+                vx = random.choice(xy)
+                vy = random.choice(xy)
+                teki_rct.move_ip(vx, vy)
+                scr.sfc.blit(teki_sfc, teki_rct)   
 
         pg.display.update()
         clock.tick(1000)
