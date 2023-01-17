@@ -58,6 +58,11 @@ def main2():
     arr[foodx][foody] = -1
     snake_lon = 3  # 蛇の長さ
     way = 1  # 蛇の運動方向
+    life = 3 # ライフの数
+    pg.mixer.music.load("優雅なお猫様.mp3")  # BGMのロード
+    pg.mixer.music.play(100)  # BGMを100回再生
+    get = pg.mixer.Sound("レトロアクション.mp3")  # 餌ゲット時のSEのロード
+    end = pg.mixer.Sound("しょげる.mp3")  # 終了時のSEのロード
     fonto = pg.font.Font(None,80)
     fonto2 = pg.font.Font(None,30)
     appnum = 3 #りんごゲットのノルマ(坂本)
@@ -73,6 +78,14 @@ def main2():
             screen.blit(app,(50,50))#スクリーンに表示(坂本)
             #screen.fill(color_white)
             time.sleep(0.1)
+            for i in range(life):  #life表示
+                H_sfc = pg.image.load("Hart.png")
+                H_sfc = pg.transform.rotozoom(H_sfc, 0, 0.15)
+                H_rct = H_sfc.get_rect()
+                H_rct.center = i*50+30, 30
+
+                # scrn_sfcにtori_rctに従って，tori_sfcを貼り付ける
+                screen.blit(H_sfc, H_rct)
             for event in pg.event.get():  # 监听器
                 if event.type == pg.QUIT:
                     sys.exit()
@@ -94,6 +107,8 @@ def main2():
             if way == 4:
                 y += 1
             if (x > 160) or (y > 90) or (x < 1) or (y < 1) or (arr[x][y] > 0):  # 死亡(壁、自分の体をぶつかったら)
+                end.play()  # 終了時のSE
+                time.sleep(1)  # 1秒停止
                 screen.blit(gover,(300,400))#ゲームオーバーの表示(坂本)
                 pg.display.update()
                 game= False   #ゲームオーバーのフラグ(坂本)
@@ -108,6 +123,7 @@ def main2():
                     if (d < 0):
                         pg.draw.rect(screen, color_red, ((a - 1) * 10, (c - 1) * 10, 10, 10))
             if (x == foodx) and (y == foody):   #蛇が食べ物を食べったら
+                get.play()  # 餌ゲット時のSE 
                 snake_lon += 1    #長さ+1
                 appnum -= 1  #ノルマのりんごの数を1減らす(坂本)
                 app = fonto2.render((f"APPLE:{appnum}"),True,(0,0,0)) #残りのりんごの獲得ノルマ表示(坂本)
@@ -115,11 +131,16 @@ def main2():
                     foodx = random.randint(1, 60)
                     foody = random.randint(1, 40)
                 arr[foodx][foody] = -1
+                life -= 1
                 pg.display.update()
                 if appnum < 1:                   #りんごのノルマを達成していたら(坂本)
                     screen.blit(clear,(300,400)) #クリア表示(坂本)
                     pg.display.update()
                     game = False #ゲームオーバーのフラグ(坂本)
+            if life == 0:
+                end.play()  # 終了時のSE
+                time.sleep(1)  # 1秒停止
+                sys.exit()  # 終了
         else:
             for event in pg.event.get():  
                 if event.type == pg.QUIT:
